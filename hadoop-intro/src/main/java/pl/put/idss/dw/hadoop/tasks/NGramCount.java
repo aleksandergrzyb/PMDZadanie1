@@ -37,7 +37,12 @@ public class NGramCount {
 
 		@Override
 		public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
-			//@TODO
+			String line = value.toString();
+			for (int i = 0; i < line.length() - gramSize; i++) {
+				String part = line.substring(i, i + gramSize);
+				word.set(part);
+				context.write(word, ONE);
+			}
 		}
 
 	}

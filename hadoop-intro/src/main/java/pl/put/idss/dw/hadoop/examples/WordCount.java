@@ -29,8 +29,12 @@ public class WordCount {
 
 		// key and value in the map procedure
 		public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
-			// Use string tokenizer (java.util.StringTokenizer)
-			// Emit data to reducer by context.write(key,value)
+			StringTokenizer st = new StringTokenizer(value.toString());
+			while (st.hasMoreTokens()) {
+				String text = st.nextToken();
+				word.set(text);
+				context.write(word, ONE);
+			}
 		}
 
 	}
@@ -46,9 +50,11 @@ public class WordCount {
 		// key and list of values for this key in the reduce procedure
 		public void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException,
 				InterruptedException {
-			// for each element in 'values'...
-			// ... do something ...
-			// and emit (context.write(...))
+			int sum = 0;
+			while (values.iterator().hasNext()) {
+				sum += values.iterator().next().get();
+			}
+			context.write(key, new IntWritable(sum));
 		}
 	}
 
